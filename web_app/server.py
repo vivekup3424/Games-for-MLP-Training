@@ -4,6 +4,7 @@ import json
 import signal
 import sys
 from urllib.parse import parse_qs
+from threading import Thread
 
 PORT = 8000
 
@@ -16,6 +17,9 @@ class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
     def do_POST(self):
@@ -46,17 +50,23 @@ def signal_handler(signal, frame):
     httpd.server_close()
     sys.exit(0)
 
-# Setup the server
-with socketserver.TCPServer(("", PORT), CORSRequestHandler) as httpd:
+def start_server():
+    global httpd
+    with socketserver.TCPServer(("", PORT), CORSRequestHandler) as httpd:
+        print(f"Serving at port {PORT}")
+        httpd.serve_forever()
+
+if __name__ == "__main__":
     # Register signal handler for graceful shutdown
     signal.signal(signal.SIGINT, signal_handler)  # Handle Ctrl+C (SIGINT)
     signal.signal(signal.SIGTERM, signal_handler)  # Handle termination signal (SIGTERM)
 
-    print(f"Serving at port {PORT}")
+    server_thread = Thread(target=start_server)
+    server_thread.start()
+
+    # Keep the main thread alive to handle signals
     try:
-        httpd.serve_forever()
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        httpd.shutdown()
-        httpd.server_close()
-        sys.exit(1)
+        while True:
+            pass
+    except KeyboardInterrupt:
+        signal_handler(signal.SIGINT, None)

@@ -7,7 +7,6 @@ const scoreElement = document.getElementById("score");
 const GRID_SIZE = 20;
 const GRID_WIDTH = canvas.width / GRID_SIZE;
 const GRID_HEIGHT = canvas.height / GRID_SIZE;
-const SHRINK_INTERVAL = 2000; // 10 seconds in milliseconds
 
 // Game variables
 let snake,
@@ -45,8 +44,6 @@ function init() {
   food = spawnFood();
   updateScore();
 
-  // Set up the shrinking interval
-  shrinkInterval = setInterval(shrinkSnake, SHRINK_INTERVAL);
   // Set up the logging interval (every 5 seconds)
   logInterval = setInterval(sendLogToServer, 5000);
 }
@@ -230,7 +227,7 @@ function logMove(action) {
 // Send log to server
 function sendLogToServer() {
   if (gameLog.length > 0) {
-    fetch("http://localhost:8040", {
+    fetch("http://192.168.0.105:8000", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -339,10 +336,10 @@ function logMove(action) {
     enclosed_spaces_count: enclosedSpaces.count,
     largest_enclosed_space: enclosedSpaces.largestSize,
     tail_reachable: isClearPath(head, tail),
-    action: action,
     food_eaten: false,
     game_ended: gameOver,
     time_elapsed: (Date.now() - gameStartTime) / 1000, // in seconds
+    action: action,
   };
 
   gameLog.push(Object.values(state));
@@ -407,7 +404,52 @@ function shrinkSnake() {
     gameOver = true;
   }
 }
+function setupSwipeControls() {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+
+  canvas.addEventListener("touchstart", function (event) {
+    touchStartX = event.changedTouches[0].screenX;
+    touchStartY = event.changedTouches[0].screenY;
+  });
+
+  canvas.addEventListener("touchend", function (event) {
+    touchEndX = event.changedTouches[0].screenX;
+    touchEndY = event.changedTouches[0].screenY;
+
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+
+    if (absDeltaX > absDeltaY) {
+      if (deltaX > 0) {
+        triggerKeyPress("ArrowRight"); // Swipe right
+      } else {
+        triggerKeyPress("ArrowLeft"); // Swipe left
+      }
+    } else {
+      if (deltaY > 0) {
+        triggerKeyPress("ArrowDown"); // Swipe down
+      } else {
+        triggerKeyPress("ArrowUp"); // Swipe up
+      }
+    }
+  }
+
+  function triggerKeyPress(key) {
+    const event = new KeyboardEvent("keydown", { key: key });
+    document.dispatchEvent(event);
+  }
+}
 
 // Start the game
 init();
+setupSwipeControls();
 gameLoop = setInterval(gameStep, 100); // Update every 100ms
