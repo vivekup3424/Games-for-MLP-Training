@@ -6,7 +6,7 @@ import sys
 from urllib.parse import parse_qs
 from threading import Thread
 
-PORT = 8080
+PORT = 8000
 
 class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
