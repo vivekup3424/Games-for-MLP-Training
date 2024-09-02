@@ -1,0 +1,14 @@
+// Spawn snake at a random location:w
+x = Math.random() * GRID_WIDTH;
+y = Math.random() * GRID_HEIGHT;
+snake = [{ x: x, y: y }];
+ranD = Math.random() * 4;
+if (ranD < 1) {
+  direction = Direction.UP;
+} else if (ranD < 2) {
+  direction = Direction.DOWN;
+} else if (ranD < 3) {
+  direction = Direction.LEFT;
+} else {
+  direction = Direction.RIGHT;
+}

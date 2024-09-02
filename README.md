@@ -70,3 +70,5 @@ Here's a comprehensive list of features to log for each move in the Snake game. 
 Remember to normalize these features appropriately before feeding them into your MLP. Some features (like distances) might need to be scaled relative to the game board size, while boolean features can be represented as 0 or 1.
 
 This comprehensive set of features should provide your MLP with a rich representation of the game state, allowing it to learn complex strategies for playing Snake.
+
+IP = 117.250.157.213

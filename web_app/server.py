@@ -6,7 +6,7 @@ import sys
 from urllib.parse import parse_qs
 from threading import Thread
 
-PORT = 8000
+PORT = 8080
 
 class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
@@ -25,7 +25,7 @@ class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        print("Received data:", post_data)  # Log the raw data for debugging
+        #print("Received data:", post_data)  # Log the raw data for debugging
         
         try:
             data = json.loads(post_data.decode('utf-8'))
