@@ -227,7 +227,11 @@ function logMove(action) {
 // Send log to server
 function sendLogToServer() {
   if (gameLog.length > 0) {
+<<<<<<< HEAD
     fetch("http://192.168.69.182:8000", {
+=======
+    fetch("http://192.168.0.105:8000", {
+>>>>>>> 2fc119f (sending the model)
       method: "POST",
       headers: {
         "Content-Type": "application/json",
