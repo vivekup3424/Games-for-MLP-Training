@@ -7,7 +7,7 @@ const scoreElement = document.getElementById("score");
 const GRID_SIZE = 20;
 const GRID_WIDTH = canvas.width / GRID_SIZE;
 const GRID_HEIGHT = canvas.height / GRID_SIZE;
-const SHRINK_INTERVAL = 2000; // 2 seconds in milliseconds
+const SHRINK_INTERVAL = 2000; // 10 seconds in milliseconds
 
 // Game variables
 let snake,
@@ -60,11 +60,58 @@ function manhattanDistance(x1, y1, x2, y2) {
   return Math.abs(x2 - x1) + Math.abs(y2 - y1);
 }
 
-// Check if there's a clear path between two points
+// Check if there's a clear path between two points, using BFS
 function isClearPath(start, end) {
-  // Implementation of pathfinding algorithm (e.g., A* or BFS)
-  // This is a placeholder and needs to be implemented
-  return true;
+  const queue = [start];
+  const visited = new Set();
+  const directions = [
+    { dx: 0, dy: -1 }, // up
+    { dx: 0, dy: 1 }, // down
+    { dx: -1, dy: 0 }, // left
+    { dx: 1, dy: 0 }, // right
+  ];
+
+  function isValid(x, y) {
+    return x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT;
+  }
+
+  function isObstacle(x, y) {
+    return snake.some((segment, index) => {
+      // Ignore the head (index 0) and the last segment
+      return (
+        index > 0 &&
+        index < snake.length - 1 &&
+        segment.x === x &&
+        segment.y === y
+      );
+    });
+  }
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const key = `${current.x},${current.y}`;
+
+    if (current.x === end.x && current.y === end.y) {
+      return true; // Path found
+    }
+
+    if (visited.has(key)) {
+      continue;
+    }
+
+    visited.add(key);
+
+    for (const dir of directions) {
+      const newX = (current.x + dir.dx + GRID_WIDTH) % GRID_WIDTH;
+      const newY = (current.y + dir.dy + GRID_HEIGHT) % GRID_HEIGHT;
+
+      if (!isObstacle(newX, newY) && !visited.has(`${newX},${newY}`)) {
+        queue.push({ x: newX, y: newY });
+      }
+    }
+  }
+
+  return false; // No path found
 }
 
 // Spawn food at a random location

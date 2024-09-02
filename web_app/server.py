@@ -1,9 +1,11 @@
 import http.server
 import socketserver
 import json
+import signal
+import sys
 from urllib.parse import parse_qs
 
-PORT = 8040
+PORT = 8000
 
 class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
@@ -19,9 +21,11 @@ class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
+        print("Received data:", post_data)  # Log the raw data for debugging
         
         try:
             data = json.loads(post_data.decode('utf-8'))
+            print("Parsed JSON:", data)  # Log the parsed JSON for debugging
             
             # Append the data to a file
             with open('game_log.csv', 'a') as f:
@@ -36,7 +40,23 @@ class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"Invalid JSON data")
 
+def signal_handler(signal, frame):
+    print("\nGracefully shutting down the server...")
+    httpd.shutdown()
+    httpd.server_close()
+    sys.exit(0)
+
 # Setup the server
 with socketserver.TCPServer(("", PORT), CORSRequestHandler) as httpd:
+    # Register signal handler for graceful shutdown
+    signal.signal(signal.SIGINT, signal_handler)  # Handle Ctrl+C (SIGINT)
+    signal.signal(signal.SIGTERM, signal_handler)  # Handle termination signal (SIGTERM)
+
     print(f"Serving at port {PORT}")
-    httpd.serve_forever()
+    try:
+        httpd.serve_forever()
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        httpd.shutdown()
+        httpd.server_close()
+        sys.exit(1)
