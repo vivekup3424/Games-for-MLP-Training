@@ -1,6 +1,4 @@
-# CSV-File created with merge-csv.com
-# -----------------------------------------------------------
-
+head_x,head_y,tail_x,tail_y,food_x,food_y,direction,snake_length,score,head_top_distance,head_bottom_distance,head_left_distance,head_right_distance,tail_top_distance,tail_bottom_distance,tail_left_distance,tail_right_distance,manhattan_distance_to_food,euclidean_distance_to_food,danger_up,danger_down,danger_left,danger_right,food_above,food_below,food_left,food_right,body_segments_same_row,body_segments_same_column,body_turns,moves_since_eating,total_moves,closest_body_distance,enclosed_spaces_count,largest_enclosed_space,tail_reachable,food_eaten,game_ended,time_elapsed,action
 16,10,15,10,6,19,1,2,1,10,10,16,4,10,10,15,5,19,13.45362404707371,False,False,True,False,False,True,True,False,1,0,0,45,45,1,0,0,True,False,False,4.692,UP
 16,7,16,8,6,19,1,2,1,7,13,16,4,8,12,16,4,22,15.620499351813308,False,True,False,False,False,True,True,False,0,1,0,48,48,1,0,0,True,False,False,4.97,UP
 16,3,16,4,6,19,1,2,1,3,17,16,4,4,16,16,4,26,18.867962264113206,False,True,False,False,False,True,True,False,0,1,0,52,52,1,0,0,True,False,False,5.363,UP
