@@ -64,7 +64,6 @@ Here's a comprehensive list of features to log for each move in the Snake game. 
 
 ## Time-based Features (if applicable)
 
-37. Time elapsed since game start
 38. Time taken for this move
 
 Remember to normalize these features appropriately before feeding them into your MLP. Some features (like distances) might need to be scaled relative to the game board size, while boolean features can be represented as 0 or 1.
