@@ -20,7 +20,7 @@ Here's a comprehensive list of features to log for each move in the Snake game. 
 11. Distance of tail from top wall
 12. Distance of tail from bottom wall
 13. Distance of tail from left wall
-14. Distance of tail from right wall
+14. Distance of tail from right wall   
 15. Manhattan distance between head and food
 16. Euclidean distance between head and food
 
